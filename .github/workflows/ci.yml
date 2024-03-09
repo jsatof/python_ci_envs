@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  install_project:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Install python 3.12
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+
+  the_test:
+    needs: install_project
+    runs-on: ubuntu-22.04
+    env:
+      MY_SECRET: ${{ secrets.MY_SECRET }}
+    steps:
+      - name: Check out project
+        uses: actions/checkout@v4
+
+      - run: python -m venv the_test_venv
+      - run: source the_test_venv/bin/activate
+        #- run: pip install -r requirements.txt
+      - run: echo $MY_SECRET
+      - run: python main.py
